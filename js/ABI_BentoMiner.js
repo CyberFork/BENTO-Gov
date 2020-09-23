@@ -123,6 +123,12 @@ var BentoMiner_ABI = [
 			},
 			{
 				"indexed": false,
+				"internalType": "bool",
+				"name": "Option",
+				"type": "bool"
+			},
+			{
+				"indexed": false,
 				"internalType": "uint256",
 				"name": "BentoAmount",
 				"type": "uint256"
@@ -195,8 +201,50 @@ var BentoMiner_ABI = [
 		"type": "function"
 	},
 	{
+		"inputs": [
+			{
+				"internalType": "uint256",
+				"name": "_proposalid",
+				"type": "uint256"
+			},
+			{
+				"internalType": "address",
+				"name": "_voter",
+				"type": "address"
+			}
+		],
+		"name": "checkVoteOfPlayer",
+		"outputs": [
+			{
+				"internalType": "uint256",
+				"name": "trueVotes",
+				"type": "uint256"
+			},
+			{
+				"internalType": "uint256",
+				"name": "falseVotes",
+				"type": "uint256"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
 		"inputs": [],
 		"name": "claim",
+		"outputs": [
+			{
+				"internalType": "bool",
+				"name": "",
+				"type": "bool"
+			}
+		],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"name": "claimAndWithdraw",
 		"outputs": [
 			{
 				"internalType": "bool",
@@ -260,7 +308,7 @@ var BentoMiner_ABI = [
 				"type": "uint256"
 			}
 		],
-		"name": "getVoteInfo",
+		"name": "getVoteObjectInfo",
 		"outputs": [
 			{
 				"internalType": "address",
@@ -281,6 +329,16 @@ var BentoMiner_ABI = [
 				"internalType": "uint112",
 				"name": "nowBentosInVote",
 				"type": "uint112"
+			},
+			{
+				"internalType": "uint256",
+				"name": "trueOptionVotes",
+				"type": "uint256"
+			},
+			{
+				"internalType": "uint256",
+				"name": "falseOptionVotes",
+				"type": "uint256"
 			},
 			{
 				"internalType": "enum BentoVoter.voteState",
@@ -349,6 +407,19 @@ var BentoMiner_ABI = [
 		"type": "function"
 	},
 	{
+		"inputs": [],
+		"name": "loopRewardPercentage",
+		"outputs": [
+			{
+				"internalType": "uint256",
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
 		"inputs": [
 			{
 				"internalType": "address",
@@ -356,7 +427,7 @@ var BentoMiner_ABI = [
 				"type": "address"
 			}
 		],
-		"name": "lpTokenInBankOf",
+		"name": "lpTokensInBankOf",
 		"outputs": [
 			{
 				"internalType": "uint256",
@@ -453,6 +524,62 @@ var BentoMiner_ABI = [
 	{
 		"inputs": [
 			{
+				"internalType": "uint256",
+				"name": "_proposalid",
+				"type": "uint256"
+			},
+			{
+				"internalType": "bool",
+				"name": "_option",
+				"type": "bool"
+			}
+		],
+		"name": "recaptureCastedVoteEventVotes",
+		"outputs": [
+			{
+				"internalType": "bool",
+				"name": "",
+				"type": "bool"
+			}
+		],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "uint256",
+				"name": "_proposalid",
+				"type": "uint256"
+			}
+		],
+		"name": "recaptureFailedVoteEventVotes",
+		"outputs": [
+			{
+				"internalType": "bool",
+				"name": "",
+				"type": "bool"
+			}
+		],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"name": "requiredMortgages",
+		"outputs": [
+			{
+				"internalType": "uint256",
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
 				"internalType": "address",
 				"name": "_newPairAddress",
 				"type": "address"
@@ -466,6 +593,32 @@ var BentoMiner_ABI = [
 				"type": "bool"
 			}
 		],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "uint256",
+				"name": "_newLoopRewardPercentage",
+				"type": "uint256"
+			}
+		],
+		"name": "setLoopRewardPercentage",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "uint256",
+				"name": "_newRequiredMortgages",
+				"type": "uint256"
+			}
+		],
+		"name": "setRequiredMortgages",
+		"outputs": [],
 		"stateMutability": "nonpayable",
 		"type": "function"
 	},
@@ -536,6 +689,35 @@ var BentoMiner_ABI = [
 			}
 		],
 		"name": "unClaimedOf",
+		"outputs": [
+			{
+				"internalType": "uint256",
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "uint256",
+				"name": "_proposalid",
+				"type": "uint256"
+			},
+			{
+				"internalType": "address",
+				"name": "_voter",
+				"type": "address"
+			},
+			{
+				"internalType": "bool",
+				"name": "_option",
+				"type": "bool"
+			}
+		],
+		"name": "unRecaptureBentosOf",
 		"outputs": [
 			{
 				"internalType": "uint256",
