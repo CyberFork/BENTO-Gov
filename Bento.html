@@ -1,0 +1,447 @@
+<!-- <html>
+	<head>
+	</head>
+	<body>
+	</body>
+</html> -->
+<!-- https://www.cnblogs.com/farwish/p/12393428.html  metamask事件变化
+
+ethereum.on('networkChanged', function (networkIDstring) {
+  // ...
+})
+
+ethereum.on('accountsChanged', function (accounts) {
+  // Time to reload your interface with accounts[0]!
+})
+-->
+<!-- {% verbatim myblock %} -->
+<!DOCTYPE html>
+<html lang="zh">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Bento Test</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="shortcut icon" href="../static/img/bento.ico">
+    <!-- web3 -->
+    <script src="../static/js/web3.min.js"></script>
+    <script language="javascript" type="text/javascript" src="../static/js/ABI_Bentoken.js"></script>
+    <script language="javascript" type="text/javascript" src="../static/js/ABI_BentoMiner.js"></script>
+    <script language="javascript" type="text/javascript" src="../static/js/ABI_NAPToken.js"></script>
+
+    <!-- vue.js -->
+    <!-- 开发环境版本，包含了有帮助的命令行警告 -->
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <!-- 生产环境版本，优化了尺寸和速度 -->
+    <!-- <script src="https://cdn.jsdelivr.net/npm/vue"></script> -->
+    <!-- css -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.0/dist/css/bootstrap.min.css"
+        integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
+    <link type="text/css" rel="styleSheet" href="../static/css/neon.css" />
+
+    <!-- 强制刷新免遗留 -->
+    <meta http-equiv="pragma" content="no-cache">
+    <meta http-equiv="Cache-Control" content="no-cache, must-revalidate">
+    <meta http-equiv="expires" content="0">
+
+</head>
+<style scoped>
+    body {
+        padding: 1vh;
+        /* background-image: url("../static/img/sbpk.jpg"); */
+        background-image: url(../static/img/bento.ico);
+        background-repeat: repeat；
+    }
+</style>
+
+<body>
+
+    <!-- </body> onclick="location.reload();"> -->
+
+    <div id="app" style="width: 100%;">
+        <header>
+            <div class="card">
+                <div class="card-body">
+                    <span>
+                        <span class="neon" onclick="location.reload();">🍱Bento {{GovHoeTokenName}} Gov</span>
+
+                    </span>
+                    <span style="float: right;">
+                        <a>Total Supply: {{bentoTotalSupply}} $BENTO | </a>
+                        <a>BlockHeight:{{blockHeight}}</a>
+                    </span>
+
+                </div>
+            </div>
+
+
+        </header>
+        <br>
+        <nav style="float: none;">
+            <div class="card">
+                <div class="card-body">
+                    $BENTO Token @: {{tokenAddress}} | pool weight:{{poolWeight}}/{{totalPoolWeight}}:total pool
+                    <hr class="my-4">
+                    Mine Field Contract:{{GovHoeTokenName}}:{{minerAddress}}
+                    <!-- <div class="dropdown">
+                        Mine Field Contract:{{GovHoeTokenName}}:{{minerAddress}}
+                        <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton"
+                            data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            {{GovHoeTokenName}}:{{minerAddress}}
+                        </button>
+                        <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                            <a class="dropdown-item" href="#">$UNI:{{minerAddress}}</a>
+                            <a class="dropdown-item" href="#">{{GovHoeTokenName}}:{{minerAddress}}</a>
+                            <a class="dropdown-item" href="#">$Sushi:{{minerAddress}}</a>
+                        </div>
+                    </div>
+                    <div class="dropdown">
+                        <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton"
+                            data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            Dropdown button
+                        </button>
+                        <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                            <a class="dropdown-item" href="#">Action</a>
+                            <a class="dropdown-item" href="#">Another action</a>
+                            <a class="dropdown-item" href="#">Something else here</a>
+                        </div>
+                    </div> -->
+                    <br />
+                    Total Gov locked: {{govTotalLockedF}} {{GovHoeTokenName}}
+                </div>
+            </div>
+
+        </nav>
+        <hr>
+
+        <div class="container" style="max-width: 100%;">
+            <div class="row">
+
+                <div class="col-8">
+                    <!-- $bento -->
+                    <section>
+                        <div class="card">
+                            <div class="card-body">
+                                <!-- <h5 class="card-title">$BENTO</h5> -->
+                                Balance : {{bento_balance}} $BENTO in wallet
+                                <hr>
+                                <div style="display:inline-block;width: 100%;"><span class="card-text">My unclaim
+                                        : {{bento_unclaim}} $BENTO</span>
+                                    <span style="float: right;" class="btn btn-warning" @click='claimBento()'>Claim All</span></div>
+                                <hr>
+                                <div style="display:inline-block;width: 100%;"><span class="card-text">My $BENTO in
+                                        Bank:{{bento_inBank}}</span>
+                                    <span style="float: right;" class="btn btn-danger" @click='withdrawBento()'>Withdraw</span>
+                                    
+                                    <input class="input-group-text" style="width: 25%;display: inline-flex; float:right"
+                                        type="number" placeholder='Amount' v-model='v_Bentos_withdraw'></input></div>
+
+                            </div>
+                        </div>
+                    </section>
+                    <hr>
+                    <!-- $gov -->
+                    <section>
+                        <div class="card">
+                            <div class="card-body">
+                                <!-- <span style="width: 30%;" class='card-title'>{{GovHoeTokenName}}</span> -->
+                                Balance : {{gov_balance}} {{GovHoeTokenName}} in wallet
+                                <span style="float: right;" type="button" class="btn btn-success" @click="approveGovToken()">Approve</span>
+                                <hr>
+                                <div style="display:inline-block;width: 100%;"><span class="card-text"> Mining
+                                        $BENTO:
+                                        {{gov_lockedF}} {{GovHoeTokenName}}</span>
+                                    <span style="float: right;" class="btn btn-primary" @click='depositGovTokenToMine()'>Deposit to mine</span>
+                                    <input class="input-group-text" style="width: 25%;display: inline-flex; float:right"
+                                        type="number" placeholder='Amount' v-model='v_Govs_deposit'></input>
+
+                                </div>
+                                <hr>
+                                <div style="display:inline-block;width: 100%;"><span class="card-text">Mining speed :
+                                        {{bento_MiningSpeed}} $BENTO per block</span>
+                                    <span style="float: right;" class="btn btn-danger">Withdraw {{GovHoeTokenName}}</span>
+                                    <input class="input-group-text" style="width: 25%;display: inline-flex; float:right"
+                                        type="number" placeholder='Amount' v-model='v_Govs_withdraw'></input>
+
+                                </div>
+                                <hr>
+                                <!-- <a href="#" class="btn btn-primary">Go somewhere</a> -->
+                                Mining portion : {{gov_percentage}} % <meter :value="gov_percentage" min="0" max="100"
+                                    style="width: 100%;"></meter><br>
+                            </div>
+                        </div>
+                    </section>
+                </div>
+                <div class="col-4">
+                    <aside>
+                        <div class="card">
+                            <div class="card-body">
+                                <h5 class="card-title">Events</h5>
+                                <p class="card-text">这个地方用来显示各种各样的新发生的事件。因为要先开发其他功能进行测试所以先搁置。
+                                </p>
+                                <a href="#" class="btn btn-info">手动刷新</a>
+                            </div>
+                        </div>
+                    </aside>
+
+                </div>
+            </div>
+
+        </div>
+
+</body>
+<script>
+    // var BENTokenAddress = "0x30399AF2297D7be104da3F7A1b26A87F7806B2Df";
+    // var BENMinerAddress = "0x35E4820C1E08e60D1a365F6A85D56D41b3006cF2";
+    // var GovTokenAddress = "0x6E77B74a7bbC4082264948b5f89cd8821Cf4DcA0";
+    var BENTokenAddress = "0x9403CAcff32735F354327d2283cf2CFcba94842D";
+    var BENMinerAddress = "0xBCcA45FA41c7eF29cB7B7e6d8b129FA5Eeaf6432";
+    var GovTokenAddress = "0xb4a94DA855Da0B1174Bf10E9900D7001332C01Dd";
+    // self.setTimeout("app.RefreshFunds()", 1000);
+    // self.setInterval("app.RefreshFunds()", 10000);
+    console.log('BENTokenAddress:', BENTokenAddress);
+    console.log('BENMinerAddress:', BENMinerAddress);
+    var lg = 'en';
+    //TODO:测试web3是metamask的还是我导入的
+    web3js = new Web3(web3.currentProvider);
+    Bentoken = new web3js.eth.Contract(Bentoken_ABI, BENTokenAddress);
+    BentoMiner = new web3js.eth.Contract(BentoMiner_ABI, BENMinerAddress);
+    Govtoken = new web3js.eth.Contract(NAPToken_ABI, GovTokenAddress);
+    //如果用户安装了MetaMask，必须要求他们授权应用登录并获取其账号才能使用
+    ethereum.enable();
+    window.ethereum;
+    // 成功之后这个会返回当前选择的账户
+    web3js.eth.getAccounts().then(function (accounts) {
+        //现在只能使用then异步的方式返回单个了
+        console.log('Now account:', accounts);
+    });
+    ethereum.on('accountsChanged', function (accounts) {
+        // Time to reload your interface with accounts[0]!
+        //   app.RefreshFunds();
+        //   app.myGameDatas = [];
+        //   app.lobbyGameDatas = [];
+    })
+    var STORAGE_KEY = 'BENTO_' + this.GovHoeTokenName;
+    var BENTO_Gov_Storage = {
+        fetch: function () {
+            //整个取
+            var games = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
+            // 如果取不到就返回[]
+            // games.forEach(function (game, index) {
+            //   game.id = index
+            // });
+            // xxxStorage.uid = games.length; //这里是unitID的意思，单个item的ID
+            return games
+        },
+        save: function (games) {
+            //整个存
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(games))
+        }
+    };
+
+    var app = new Vue({
+        el: '#app',
+        data: function () {
+            return {
+                tokenAddress: BENTokenAddress,
+                minerAddress: BENMinerAddress,
+                w3: web3js = new Web3(web3.currentProvider),
+                addressNow: '0x0000000000000000000000000000000000000000',
+                localGames: BENTO_Gov_Storage.fetch(),
+                //宏观数据
+                bentoTotalSupply: 0,
+                govTotalLocked: 0,
+                govTotalLockedF:0,
+                blockHeight: 0,
+                poolWeight: 0,
+                totalPoolWeight: 0,
+                GovHoeTokenName: '$NAP',
+                //个人数据
+                bento_balance: 0,
+                bento_MiningSpeed: 0,
+                bento_unclaim: 0,
+                bento_inBank: 0,
+                gov_balance: 0,
+                gov_locked: 0,
+                gov_lockedF: 0,
+                gov_percentage: 0,
+                //交互数据
+                v_Govs_deposit:null,
+                v_Govs_withdraw:null,
+                v_Bentos_withdraw:null
+            }
+        },
+        //声明周期
+        beforeCreat() {
+
+        },
+        Created() {
+
+        },
+        beforeMount() {
+            
+        },
+        mounted() {
+            this.refreshAll();
+        },
+        beforeUpdate() {
+
+        },
+        updated() {
+            this.delyRefresh();
+        },
+        beforeDestory() {
+
+        },
+        destoryed() {
+
+        },
+        //方法
+        methods: {
+            // 国际化
+            // internationalization(_lg) {
+            //     if (_lg == 'zh') {
+            //         this.title = '{{GovHoeTokenName}} 治理'
+            //     } else if (_lg == 'en') {
+            //         this.title = '{{GovHoeTokenName}} Gov'
+            //     }
+            // },
+            // 数据处理方法
+            _formatBigNumber(_bn) {
+                return parseFloat(web3js.utils.fromWei(_bn, 'ether')).toLocaleString();
+            },
+            // 数据获取方法
+            refreshAll() {
+                // this.internationalization(lg);
+                this.getBentoTotalSupply();
+                this.getGovTotalSupply();
+                this.getBlockHeight();
+                this.getWeigthInfo();
+            },
+            delyRefresh() {
+                this.getMyBentoBalance();
+                this.getMyUnclaimBento();
+                this.getMyBentoInBank();
+                this.getGovBalance();
+                this.getGovLockedAmount();
+                this.getBentoMiningSpeed();
+                this.getMyMiningPercentage()
+            },
+            getBentoTotalSupply() {
+                Bentoken.methods.totalSupply().call().then((rst) => {
+
+                    this.bentoTotalSupply = this._formatBigNumber(rst);
+                })
+            },
+            getGovTotalSupply() {
+                BentoMiner.methods.totalLPTokensLocked().call().then((rst) => {
+                    this.govTotalLocked = rst / 10**18;
+                    this.govTotalLockedF = this._formatBigNumber(rst);
+                })
+            },
+            getBlockHeight() {
+                web3js.eth.getBlockNumber().then((rst) => { this.blockHeight = rst })
+            },
+            getWeigthInfo() {
+                Bentoken.methods.getUnionWeight(BENMinerAddress).call().then((rst) => {
+                    console.log(rst);
+                    this.totalPoolWeight = rst[1];
+                    this.poolWeight = rst[0];
+                })
+            },
+            getMyBentoBalance() {
+                Bentoken.methods.balanceOf(web3.eth.defaultAccount).call().then((rst) => {
+                    this.bento_balance = this._formatBigNumber(rst);
+                })
+            },
+            getMyUnclaimBento() {
+                BentoMiner.methods.unClaimedOf(web3.eth.defaultAccount).call().then((rst) => {
+                    this.bento_unclaim = this._formatBigNumber(rst);
+                })
+            },
+            getMyBentoInBank() {
+                BentoMiner.methods.bentosInBankOf(web3.eth.defaultAccount).call().then((rst) => {
+                    // console.log('bento_inBank', rst);
+                    this.bento_inBank = this._formatBigNumber(rst);
+                })
+            },
+            getGovBalance() {
+                Govtoken.methods.balanceOf(web3.eth.defaultAccount).call().then((rst) => {
+                    this.gov_balance = this._formatBigNumber(rst);
+                })
+            },
+            getGovLockedAmount() {
+                BentoMiner.methods.lpTokensInBankOf(web3.eth.defaultAccount).call().then((rst) => {
+                    this.gov_locked = rst / 10**18;
+                    this.gov_lockedF = this._formatBigNumber(rst);
+                })
+            },
+            getBentoMiningSpeed() {
+                //首先获取个人LP数量，获取总LP数量，获取当前池子权重比
+                // BentoMiner.methods.totalLPTokensLocked().call().then(rst)
+                this.bento_MiningSpeed = ((this.gov_locked / this.govTotalLocked) * (this.poolWeight / this.totalPoolWeight)) * 64;
+                console.log(this.gov_locked,this.govTotalLocked,this.poolWeight,this.totalPoolWeight);
+                //
+            },
+            getMyMiningPercentage() {
+                this.gov_percentage = (this.gov_locked * 100 / this.govTotalLocked);
+            },
+            // 数据交互方法
+            claimBento(){
+                BentoMiner.methods.claim().send({from:web3.eth.defaultAccount}).then(()=>{
+                    this.getMyUnclaimBento();
+                    this.getMyBentoInBank();
+                })
+            },
+            withdrawBento(){
+                BentoMiner.methods.withdrawBentos(web3.toWei(this.v_Bentos_withdraw, "ether")).send({from:web3.eth.defaultAccount}).then(()=>{
+                    this.getMyUnclaimBento();
+                    this.getMyBentoInBank();
+                    this.getMyBentoBalance();
+                })
+            },
+            approveGovToken(){
+                Govtoken.methods.approve(BENMinerAddress,web3js.utils.toBN('115792089237316195423570985008687907853269984665640564039457584007913129639935')).send({from:web3.eth.defaultAccount}).then((rst)=>{
+                    console.log('Approved receipt:',rst);
+                })
+            },
+            depositGovTokenToMine(_amount){
+                // web3.toWei(this.v_Naps, "ether")
+                if(this.v_Govs_deposit < 10){
+                    alert('Amount at least than 10.');
+                    return;
+                }
+                BentoMiner.methods.deposit(web3.toWei(this.v_Govs_deposit, "ether")).send({from:web3.eth.defaultAccount}).then((rst)=>{
+                    console.log('Deposit receipt:',rst);
+                    this.getMyUnclaimBento();
+                    this.getMyBentoInBank();
+                })
+            },
+            withdrawGovToken(_amount){
+
+            }
+
+
+
+        }
+    })
+    // TODO:更新为accounts[i]
+
+
+</script>
+<script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.slim.min.js"
+    integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj"
+    crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"
+    integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo"
+    crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.0/dist/js/bootstrap.min.js"
+    integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI"
+    crossorigin="anonymous"></script>
+
+
+
+</html>
+
+
+<!-- {% endverbatim myblock %} -->
