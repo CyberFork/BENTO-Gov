@@ -95,12 +95,12 @@ var NAPMVP_ABI = [
 			},
 			{
 				"indexed": false,
-				"internalType": "enum DEO_base.gameState",
-				"name": "nowState",
-				"type": "uint8"
+				"internalType": "uint256",
+				"name": "Strategy_Raw",
+				"type": "uint256"
 			}
 		],
-		"name": "GameStateUpdated",
+		"name": "GoteJoinedAndRawStgSet",
 		"type": "event"
 	},
 	{
@@ -202,16 +202,16 @@ var NAPMVP_ABI = [
 		"anonymous": false,
 		"inputs": [
 			{
-				"indexed": true,
-				"internalType": "address",
-				"name": "creater",
-				"type": "address"
-			},
-			{
 				"indexed": false,
 				"internalType": "uint256",
 				"name": "GameId",
 				"type": "uint256"
+			},
+			{
+				"indexed": true,
+				"internalType": "address",
+				"name": "creater",
+				"type": "address"
 			},
 			{
 				"indexed": true,
@@ -226,7 +226,7 @@ var NAPMVP_ABI = [
 				"type": "uint32"
 			}
 		],
-		"name": "newGameCreated",
+		"name": "newGameCreateAndHashStgSet",
 		"type": "event"
 	},
 	{
@@ -341,9 +341,14 @@ var NAPMVP_ABI = [
 				"internalType": "uint32",
 				"name": "_waitBlocks",
 				"type": "uint32"
+			},
+			{
+				"internalType": "bytes32",
+				"name": "_stgHash",
+				"type": "bytes32"
 			}
 		],
-		"name": "createGameAndJoin",
+		"name": "createGameAndSetHashStg",
 		"outputs": [
 			{
 				"internalType": "bool",
@@ -594,9 +599,14 @@ var NAPMVP_ABI = [
 				"internalType": "uint256",
 				"name": "_gameID",
 				"type": "uint256"
+			},
+			{
+				"internalType": "uint256",
+				"name": "_stg",
+				"type": "uint256"
 			}
 		],
-		"name": "joinGame",
+		"name": "joinGameAndSetGoteRawStg",
 		"outputs": [
 			{
 				"internalType": "bool",
@@ -779,60 +789,12 @@ var NAPMVP_ABI = [
 	{
 		"inputs": [
 			{
-				"internalType": "uint256",
-				"name": "_gameID",
-				"type": "uint256"
-			},
-			{
-				"internalType": "uint256",
-				"name": "_stg",
-				"type": "uint256"
-			}
-		],
-		"name": "setGoteAction",
-		"outputs": [
-			{
-				"internalType": "bool",
-				"name": "",
-				"type": "bool"
-			}
-		],
-		"stateMutability": "nonpayable",
-		"type": "function"
-	},
-	{
-		"inputs": [
-			{
 				"internalType": "address",
 				"name": "_uniSwapPair_NAP_ETH_address",
 				"type": "address"
 			}
 		],
 		"name": "setHoe",
-		"outputs": [
-			{
-				"internalType": "bool",
-				"name": "",
-				"type": "bool"
-			}
-		],
-		"stateMutability": "nonpayable",
-		"type": "function"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "uint256",
-				"name": "_gameID",
-				"type": "uint256"
-			},
-			{
-				"internalType": "bytes32",
-				"name": "_stgHash",
-				"type": "bytes32"
-			}
-		],
-		"name": "setInitiativeAction",
 		"outputs": [
 			{
 				"internalType": "bool",
