@@ -423,7 +423,7 @@ ethereum.on('accountsChanged', function (accounts) {
                     this.delyRefresh();
                 })
             },
-            withdrawGovToken(_amount) {
+            withdrawGovToken() {
                 BentoMiner.methods.withdraw(web3.toWei(this.v_Govs_withdraw, "ether")).send({ from: web3.eth.defaultAccount }).then((rst) => {
                     console.log('Withdraw Gov receipt:', rst);
                     this.refreshAll();
