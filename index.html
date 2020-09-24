@@ -127,12 +127,14 @@ ethereum.on('accountsChanged', function (accounts) {
                                 <hr>
                                 <div style="display:inline-block;width: 100%;"><span class="card-text">My unclaim
                                         : {{bento_unclaim}} $BENTO</span>
-                                    <span style="float: right;" class="btn btn-warning" @click='claimBento()'>Claim All</span></div>
+                                    <span style="float: right;" class="btn btn-warning" @click='claimBento()'>Claim
+                                        All</span></div>
                                 <hr>
                                 <div style="display:inline-block;width: 100%;"><span class="card-text">My $BENTO in
                                         Bank:{{bento_inBank}}</span>
-                                    <span style="float: right;" class="btn btn-danger" @click='withdrawBento()'>Withdraw</span>
-                                    
+                                    <span style="float: right;" class="btn btn-danger"
+                                        @click='withdrawBento()'>Withdraw</span>
+
                                     <input class="input-group-text" style="width: 25%;display: inline-flex; float:right"
                                         type="number" placeholder='Amount' v-model='v_Bentos_withdraw'></input></div>
 
@@ -146,12 +148,14 @@ ethereum.on('accountsChanged', function (accounts) {
                             <div class="card-body">
                                 <!-- <span style="width: 30%;" class='card-title'>{{GovHoeTokenName}}</span> -->
                                 Balance : {{gov_balance}} {{GovHoeTokenName}} in wallet
-                                <span style="float: right;" type="button" class="btn btn-success" @click="approveGovToken()">Approve</span>
+                                <span style="float: right;" type="button" class="btn btn-success"
+                                    @click="approveGovToken()">Approve</span>
                                 <hr>
                                 <div style="display:inline-block;width: 100%;"><span class="card-text"> Mining
                                         $BENTO:
                                         {{gov_lockedF}} {{GovHoeTokenName}}</span>
-                                    <span style="float: right;" class="btn btn-primary" @click='depositGovTokenToMine()'>Deposit to mine</span>
+                                    <span style="float: right;" class="btn btn-primary"
+                                        @click='depositGovTokenToMine()'>Deposit to mine</span>
                                     <input class="input-group-text" style="width: 25%;display: inline-flex; float:right"
                                         type="number" placeholder='Amount' v-model='v_Govs_deposit'></input>
 
@@ -159,7 +163,8 @@ ethereum.on('accountsChanged', function (accounts) {
                                 <hr>
                                 <div style="display:inline-block;width: 100%;"><span class="card-text">Mining speed :
                                         {{bento_MiningSpeed}} $BENTO per block</span>
-                                    <span style="float: right;" class="btn btn-danger">Withdraw {{GovHoeTokenName}}</span>
+                                    <span style="float: right;" class="btn btn-danger"
+                                        @click='withdrawGovToken()'>Withdraw {{GovHoeTokenName}}</span>
                                     <input class="input-group-text" style="width: 25%;display: inline-flex; float:right"
                                         type="number" placeholder='Amount' v-model='v_Govs_withdraw'></input>
 
@@ -203,6 +208,7 @@ ethereum.on('accountsChanged', function (accounts) {
     console.log('BENMinerAddress:', BENMinerAddress);
     var lg = 'en';
     //TODO:测试web3是metamask的还是我导入的
+    // web3js = new Web3(web3.currentProvider);
     web3js = new Web3(web3.currentProvider);
     Bentoken = new web3js.eth.Contract(Bentoken_ABI, BENTokenAddress);
     BentoMiner = new web3js.eth.Contract(BentoMiner_ABI, BENMinerAddress);
@@ -251,7 +257,7 @@ ethereum.on('accountsChanged', function (accounts) {
                 //宏观数据
                 bentoTotalSupply: 0,
                 govTotalLocked: 0,
-                govTotalLockedF:0,
+                govTotalLockedF: 0,
                 blockHeight: 0,
                 poolWeight: 0,
                 totalPoolWeight: 0,
@@ -266,9 +272,9 @@ ethereum.on('accountsChanged', function (accounts) {
                 gov_lockedF: 0,
                 gov_percentage: 0,
                 //交互数据
-                v_Govs_deposit:null,
-                v_Govs_withdraw:null,
-                v_Bentos_withdraw:null
+                v_Govs_deposit: null,
+                v_Govs_withdraw: null,
+                v_Bentos_withdraw: null
             }
         },
         //声明周期
@@ -279,7 +285,7 @@ ethereum.on('accountsChanged', function (accounts) {
 
         },
         beforeMount() {
-            
+
         },
         mounted() {
             this.refreshAll();
@@ -335,7 +341,7 @@ ethereum.on('accountsChanged', function (accounts) {
             },
             getGovTotalSupply() {
                 BentoMiner.methods.totalLPTokensLocked().call().then((rst) => {
-                    this.govTotalLocked = rst / 10**18;
+                    this.govTotalLocked = rst / 10 ** 18;
                     this.govTotalLockedF = this._formatBigNumber(rst);
                 })
             },
@@ -372,7 +378,7 @@ ethereum.on('accountsChanged', function (accounts) {
             },
             getGovLockedAmount() {
                 BentoMiner.methods.lpTokensInBankOf(web3.eth.defaultAccount).call().then((rst) => {
-                    this.gov_locked = rst / 10**18;
+                    this.gov_locked = rst / 10 ** 18;
                     this.gov_lockedF = this._formatBigNumber(rst);
                 })
             },
@@ -380,45 +386,49 @@ ethereum.on('accountsChanged', function (accounts) {
                 //首先获取个人LP数量，获取总LP数量，获取当前池子权重比
                 // BentoMiner.methods.totalLPTokensLocked().call().then(rst)
                 this.bento_MiningSpeed = ((this.gov_locked / this.govTotalLocked) * (this.poolWeight / this.totalPoolWeight)) * 64;
-                console.log(this.gov_locked,this.govTotalLocked,this.poolWeight,this.totalPoolWeight);
+                console.log(this.gov_locked, this.govTotalLocked, this.poolWeight, this.totalPoolWeight);
                 //
             },
             getMyMiningPercentage() {
                 this.gov_percentage = (this.gov_locked * 100 / this.govTotalLocked);
             },
             // 数据交互方法
-            claimBento(){
-                BentoMiner.methods.claim().send({from:web3.eth.defaultAccount}).then(()=>{
+            claimBento() {
+                BentoMiner.methods.claim().send({ from: web3.eth.defaultAccount }).then(() => {
                     this.getMyUnclaimBento();
                     this.getMyBentoInBank();
                 })
             },
-            withdrawBento(){
-                BentoMiner.methods.withdrawBentos(web3.toWei(this.v_Bentos_withdraw, "ether")).send({from:web3.eth.defaultAccount}).then(()=>{
+            withdrawBento() {
+                BentoMiner.methods.withdrawBentos(web3.toWei(this.v_Bentos_withdraw, "ether")).send({ from: web3.eth.defaultAccount }).then(() => {
                     this.getMyUnclaimBento();
                     this.getMyBentoInBank();
                     this.getMyBentoBalance();
                 })
             },
-            approveGovToken(){
-                Govtoken.methods.approve(BENMinerAddress,web3js.utils.toBN('115792089237316195423570985008687907853269984665640564039457584007913129639935')).send({from:web3.eth.defaultAccount}).then((rst)=>{
-                    console.log('Approved receipt:',rst);
+            approveGovToken() {
+                Govtoken.methods.approve(BENMinerAddress, web3js.utils.toBN('115792089237316195423570985008687907853269984665640564039457584007913129639935')).send({ from: web3.eth.defaultAccount }).then((rst) => {
+                    console.log('Approved receipt:', rst);
                 })
             },
-            depositGovTokenToMine(_amount){
+            depositGovTokenToMine() {
                 // web3.toWei(this.v_Naps, "ether")
-                if(this.v_Govs_deposit < 10){
+                if (this.v_Govs_deposit < 10) {
                     alert('Amount at least than 10.');
                     return;
                 }
-                BentoMiner.methods.deposit(web3.toWei(this.v_Govs_deposit, "ether")).send({from:web3.eth.defaultAccount}).then((rst)=>{
-                    console.log('Deposit receipt:',rst);
-                    this.getMyUnclaimBento();
-                    this.getMyBentoInBank();
+                BentoMiner.methods.deposit(web3.toWei(this.v_Govs_deposit, "ether")).send({ from: web3.eth.defaultAccount }).then((rst) => {
+                    console.log('Deposit Gov receipt:', rst);
+                    this.refreshAll();
+                    this.delyRefresh();
                 })
             },
-            withdrawGovToken(_amount){
-
+            withdrawGovToken(_amount) {
+                BentoMiner.methods.withdraw(web3.toWei(this.v_Govs_withdraw, "ether")).send({ from: web3.eth.defaultAccount }).then((rst) => {
+                    console.log('Withdraw Gov receipt:', rst);
+                    this.refreshAll();
+                    this.delyRefresh();
+                })
             }
 
 
