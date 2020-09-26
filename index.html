@@ -395,8 +395,10 @@ ethereum.on('accountsChanged', function (accounts) {
             // 数据交互方法
             claimBento() {
                 BentoMiner.methods.claim().send({ from: web3.eth.defaultAccount }).then(() => {
-                    this.getMyUnclaimBento();
-                    this.getMyBentoInBank();
+                    // this.getMyUnclaimBento();
+                    // this.getMyBentoInBank();
+                    this.refreshAll();
+                    this.delyRefresh();
                 })
             },
             withdrawBento() {
